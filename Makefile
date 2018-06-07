@@ -81,7 +81,7 @@ STATIC_LIBS = lib/libc.a
 SHARED_LIBS = lib/libc.so
 TOOL_LIBS = lib/musl-gcc.specs
 ALL_LIBS = $(CRT_LIBS) $(STATIC_LIBS) $(SHARED_LIBS) $(EMPTY_LIBS) $(TOOL_LIBS)
-ALL_TOOLS = obj/musl-gcc
+ALL_TOOLS =
 
 WRAPCC_GCC = gcc
 WRAPCC_CLANG = clang
