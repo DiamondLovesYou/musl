@@ -20,7 +20,11 @@ struct bin {
 #define SIZE_ALIGN (4*sizeof(size_t))
 #define SIZE_MASK (-SIZE_ALIGN)
 #define OVERHEAD (2*sizeof(size_t))
+#ifndef __wasm__
 #define MMAP_THRESHOLD (0x1c00*SIZE_ALIGN)
+#else
+#define MMAP_THRESHOLD SIZE_MAX
+#endif
 #define DONTCARE 16
 #define RECLAIM 163840
 

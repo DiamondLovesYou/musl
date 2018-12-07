@@ -45,8 +45,10 @@ static void _sigaddset(sigset_t *set, int sig)
 	set->__bits[s/8/sizeof *set->__bits] |= 1UL<<(s&8*sizeof *set->__bits-1);
 }
 
+#ifndef __wasm__
 __attribute__((__visibility__("hidden")))
 extern const char __cp_begin[1], __cp_end[1], __cp_cancel[1];
+#endif
 
 static void cancel_handler(int sig, siginfo_t *si, void *ctx)
 {
@@ -59,10 +61,12 @@ static void cancel_handler(int sig, siginfo_t *si, void *ctx)
 
 	_sigaddset(&uc->uc_sigmask, SIGCANCEL);
 
+#ifndef __wasm__
 	if (self->cancelasync || pc >= (uintptr_t)__cp_begin && pc < (uintptr_t)__cp_end) {
 		uc->uc_mcontext.MC_PC = (uintptr_t)__cp_cancel;
 		return;
 	}
+#endif
 
 	__syscall(SYS_tkill, self->tid, SIGCANCEL);
 }
