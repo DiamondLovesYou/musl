@@ -14,6 +14,10 @@
 #define inline inline __attribute__((always_inline))
 #endif
 
+#ifdef __wasm__
+#error "Don't use MUSL's malloc"
+#endif
+
 static struct {
 	volatile uint64_t binmap;
 	struct bin bins[64];

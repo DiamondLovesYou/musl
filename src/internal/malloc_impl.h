@@ -43,7 +43,7 @@ struct bin {
 __attribute__((__visibility__("hidden")))
 void __bin_chunk(struct chunk *);
 
-__attribute__((__visibility__("hidden")))
+__attribute__((__weak__, __visibility__("hidden")))
 extern int __malloc_replaced;
 
 #endif
