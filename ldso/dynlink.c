@@ -133,7 +133,7 @@ static struct dso *const nodeps_dummy;
 
 struct debug *_dl_debug_addr = &debug;
 
-__attribute__((__visibility__("hidden")))
+__attribute__((__weak__, __visibility__("hidden")))
 extern int __malloc_replaced;
 
 __attribute__((__visibility__("hidden")))
@@ -497,9 +497,10 @@ static void redo_lazy_relocs()
  * data, we reclaim the gaps at the beginning and end of writable maps
  * and "donate" them to the heap. */
 
+void __attribute__((__weak__, __visibility__("hidden"))) __malloc_donate(char* a, char* b) { }
+
 static void reclaim(struct dso *dso, size_t start, size_t end)
 {
-	void __malloc_donate(char *, char *);
 	if (start >= dso->relro_start && start < dso->relro_end) start = dso->relro_end;
 	if (end   >= dso->relro_start && end   < dso->relro_end) end = dso->relro_start;
 	if (start >= end) return;
