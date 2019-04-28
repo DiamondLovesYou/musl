@@ -2,6 +2,7 @@
 #include <poll.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <stdio.h>
 #include "syscall.h"
 #include "atomic.h"
 #include "libc.h"
@@ -76,6 +77,9 @@ int __libc_start_main(int (*main)(int,char **,char **), int argc, char **argv,
 	__libc_start_init();
 
 	/* Pass control to the application */
-	exit(main(argc, argv, envp));
+	const int ret = main(argc, argv, envp);
+	fflush(stdout);
+	fflush(stderr);
+	exit(ret);
 	return 0;
 }
