@@ -37,6 +37,8 @@ INSTALL = $(srcdir)/tools/install.sh
 
 -include config.mak
 
+LD ?= $(CC)
+
 ifeq ($(ARCH),)
 
 all:
