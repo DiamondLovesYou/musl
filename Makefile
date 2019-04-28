@@ -58,7 +58,11 @@ BASE_SRCS = $(sort $(wildcard $(BASE_GLOBS)))
 ARCH_SRCS = $(sort $(wildcard $(ARCH_GLOBS)))
 BASE_OBJS = $(patsubst $(srcdir)/%,%.o,$(basename $(BASE_SRCS)))
 ARCH_OBJS = $(patsubst $(srcdir)/%,%.o,$(basename $(ARCH_SRCS)))
-REPLACED_OBJS = $(sort $(subst /$(ARCH)/,/,$(ARCH_OBJS)))
+REPLACED_OBJS = $(sort $(subst /$(ARCH)/,/,$(ARCH_OBJS)) \
+  $(patsubst $(srcdir)/%,%.o,$(basename $(wildcard $(addprefix $(srcdir)/,src/malloc)/*.c))) \
+  $(patsubst $(srcdir)/%,%.o,$(basename $(wildcard $(addprefix $(srcdir)/,src/aio)/*.c))) \
+  $(patsubst $(srcdir)/%,%.o,$(basename $(addprefix $(srcdir)/, src/legacy/valloc.c))) )
+# EXTRA_OBJS is provided by `config.mak`.
 ALL_OBJS = $(addprefix obj/, $(filter-out $(REPLACED_OBJS), $(sort $(BASE_OBJS) $(ARCH_OBJS))))
 
 LIBC_OBJS = $(filter obj/src/%,$(ALL_OBJS))
@@ -162,13 +166,13 @@ obj/%.lo: $(srcdir)/%.S
 obj/%.lo: $(srcdir)/%.c $(GENH) $(IMPH)
 	$(CC_CMD)
 
-lib/libc.so: $(LOBJS) $(LDSO_OBJS)
-	$(CC) $(CFLAGS_ALL) $(LDFLAGS_ALL) -nostdlib -shared \
-	-o $@ $(LOBJS) $(LDSO_OBJS) $(LIBCC)
+lib/libc.so: $(LOBJS) $(LDSO_OBJS) $(EXTRA_OBJS)
+	$(LD) $(LDFLAGS_ALL) -nostdlib --relocatable \
+	-o $@ $(LOBJS) $(LDSO_OBJS) $(EXTRA_OBJS) $(LIBCC)
 
-lib/libc.a: $(AOBJS)
+lib/libc.a: $(AOBJS) $(EXTRA_OBJS)
 	rm -f $@
-	$(AR) rc $@ $(AOBJS)
+	$(AR) rc $@ $(AOBJS) $(EXTRA_OBJS)
 	$(RANLIB) $@
 
 $(EMPTY_LIBS):
