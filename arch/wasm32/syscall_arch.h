@@ -33,3 +33,4 @@ long __syscall5(long n, long a, long b, long c, long d, long e);
 long __syscall6(long n, long a, long b, long c, long d, long e, long f);
 
 #define SYSCALL_USE_SOCKETCALL
+#define SYSCALL_MMAP2_UNIT 0xffffULL

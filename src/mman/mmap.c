@@ -27,7 +27,11 @@ void *__mmap(void *start, size_t len, int prot, int flags, int fd, off_t off)
 		__vm_wait();
 	}
 #ifdef SYS_mmap2
+#ifndef __wasm__
 	ret = __syscall(SYS_mmap2, start, len, prot, flags, fd, off/UNIT);
+#else
+    ret = __syscall(SYS_mmap2, start, len, prot, flags, fd, __SYSCALL_LL_E(off/UNIT));
+#endif
 #else
 	ret = __syscall(SYS_mmap, start, len, prot, flags, fd, off);
 #endif
