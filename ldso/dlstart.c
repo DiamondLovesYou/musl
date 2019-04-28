@@ -10,11 +10,18 @@
 #include "crt_arch.h"
 
 #ifndef GETFUNCSYM
+#ifndef __wasm__
 #define GETFUNCSYM(fp, sym, got) do { \
 	__attribute__((__visibility__("hidden"))) void sym(); \
 	static void (*static_func_ptr)() = sym; \
 	__asm__ __volatile__ ( "" : "+m"(static_func_ptr) : : "memory"); \
 	*(fp) = static_func_ptr; } while(0)
+#else
+#define GETFUNCSYM(fp, sym, got) do { \
+	__attribute__((__visibility__("hidden"))) void sym(); \
+	static void (*static_func_ptr)() = sym; \
+	*(fp) = static_func_ptr; } while(0)
+#endif
 #endif
 
 __attribute__((__visibility__("hidden")))
